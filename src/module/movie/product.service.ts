@@ -1,4 +1,3 @@
-
 import { Product } from './product.interface';
 import { ProductModel } from './product.schema';
 
@@ -20,19 +19,19 @@ const deleteProductDb = async (id: Product) => {
   const result = await ProductModel.deleteOne(id);
   return result;
 };
-const updateProduct = async (
+const updateProductIntoDb = async (
   id: Product,
+  updateData: any,
   options = { new: true },
 ) => {
-  const result = await ProductModel.findByIdAndUpdate(id,  options);
+  const result = await ProductModel.findByIdAndUpdate(id, updateData, options);
   return result;
 };
-
 
 export const allProductServices = {
   createProductDb,
   getProductDb,
   idProductDb,
   deleteProductDb,
-  updateProduct,
+  updateProductIntoDb,
 };

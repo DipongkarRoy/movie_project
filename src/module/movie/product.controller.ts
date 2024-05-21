@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { allProductServices } from './product.service';
-import Product from './product.interface';
 import { ProductModel } from './product.schema';
 const createProduct = async (req: Request, res: Response) => {
   try {
@@ -19,12 +18,6 @@ const createProduct = async (req: Request, res: Response) => {
 
 const getProduct = async (req: Request, res: Response) => {
   try {
-    // let query = {}
-    // if(req.query?.name ==req.query?.name){
-    //     query={name: req.query.name }
-    //     console.log(query);
-    // }
-
     const result = await allProductServices.getProductDb();
 
     res.status(200).json({
@@ -65,28 +58,41 @@ const productIdDelete = async (req: Request, res: Response) => {
     console.log(err);
   }
 };
-const productIdUpdate = async (req: Request, res: Response) => {
-  const { productId } = req.params;
-  
-  const updateData: Partial<Product> = req.body;
+
+export const updateProduct = async (req: Request, res: Response) => {
+  // const data = ProductModel.validate(req.body);
+  // if (data) console.log(data);
+  // return res
+  //   .status(400)
+  //   .json({ success: false, message: 'update data succesfully' });
+
   try {
-    const updatedProduct = await ProductModel.findByIdAndUpdate(
+    const {productId} = req.params;
+    const updateData = req.body;
+    const product = await allProductServices.updateProductIntoDb(
       productId,
       updateData,
-      { new: true, runValidators: true },
+      { new: true },
     );
-    if (!updatedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-    res.json(updatedProduct);
-  } catch (error) {
-    res.status(400).json({ error, message: 'product update successfully' });
+    if (!product)
+      return res
+        .status(404)
+        .json({ success: false, message: 'Product not found' });
+
+    res.status(200).json({
+      success: true,
+      message: 'Product updated successfully!',
+      data: product,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+
 export const ProductController = {
   createProduct,
   getProduct,
   productId,
   productIdDelete,
-  productIdUpdate,
+  updateProduct,
 };
