@@ -1,17 +1,12 @@
 import express, { Request, Response } from 'express';
 const app = express();
-import cors from 'cors'
-import { movieRouters } from './module/movie/movie.routes';
+import cors from 'cors';
+import { ProductRouters } from './module/movie/product.routes';
 
+app.use(cors());
+app.use(express.json());
 
-
-
-app.use(cors())
-app.use(express.json())
-
-app.use('/api/v1/movies' , movieRouters)
-app.use('/api/v1/movies' , movieRouters)
-
+app.use('/api/products', ProductRouters);
 
 app.get('/', (req: Request, res: Response) => {
   const a = 'amr band';
