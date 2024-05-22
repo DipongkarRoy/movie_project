@@ -11,7 +11,6 @@ const createOrders = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       success: false,
       message: 'Internal Server Error',
@@ -22,7 +21,7 @@ const createOrders = async (req: Request, res: Response) => {
 const getOrder = async (req: Request, res: Response) => {
   try {
     const { email } = req.query;
-    console.log(email);
+
     if (email) {
       const result = await allOrder.getOder({ email });
       res.status(200).json({
@@ -40,7 +39,6 @@ const getOrder = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       success: false,
       message: 'Internal Server Error',

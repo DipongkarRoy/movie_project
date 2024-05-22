@@ -6,8 +6,8 @@ const createProductDb = async (product: Product) => {
   return result;
 };
 
-const getProductDb = async (name) => {
-  const result = await ProductModel.find(name);
+const getProductDb = async () => {
+  const result = await ProductModel.find();
   return result;
 };
 
@@ -21,7 +21,8 @@ const deleteProductDb = async (id: Product) => {
 };
 const updateProductIntoDb = async (
   id: Product,
-  updateData: any,
+  //@ts-ignore
+  updateData,
   options = { new: true },
 ) => {
   const result = await ProductModel.findByIdAndUpdate(id, updateData, options);

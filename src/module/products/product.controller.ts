@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { allProductServices } from './product.service';
-//import { ProductModel } from './product.schema';
+
 const createProduct = async (req: Request, res: Response) => {
   try {
     const id = req.body.products;
@@ -19,11 +19,10 @@ const createProduct = async (req: Request, res: Response) => {
 const getProduct = async (req: Request, res: Response) => {
   try {
     const {searchTerm} = req.query
-    console.log(searchTerm);
-    let name ={}
-    if(searchTerm==name){
+
+    if(searchTerm){
+      //@ts-ignore
       const result = await allProductServices.getProductDb({searchTerm});
-      console.log(result);
 
       res.status(200).json({
         success: true,
@@ -32,6 +31,7 @@ const getProduct = async (req: Request, res: Response) => {
       });
     }
     else{
+      //@ts-ignore
       const result = await allProductServices.getProductDb({});
 
       res.status(200).json({
@@ -49,7 +49,7 @@ const getProduct = async (req: Request, res: Response) => {
 const productId = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
-
+    //@ts-ignore
     const result = await allProductServices.idProductDb(productId);
     res.status(200).json({
       success: true,
@@ -62,8 +62,9 @@ const productId = async (req: Request, res: Response) => {
 };
 const productIdDelete = async (req: Request, res: Response) => {
   try {
+    
     const { id } = req.params;
-
+    //@ts-ignore
     const result = await allProductServices.deleteProductDb(id);
     res.status(200).json({
       success: true,
@@ -78,9 +79,10 @@ const productIdDelete = async (req: Request, res: Response) => {
 export const updateProduct = async (req: Request, res: Response) => {
 
   try {
-    const {productId} = req.params;
+    const productId = req.params.productId;
     const updateData = req.body;
     const product = await allProductServices.updateProductIntoDb(
+      //@ts-ignore
       productId,
       updateData,
       { new: true },
