@@ -1,3 +1,4 @@
+
 import Order from './order.interface';
 import orderModel from './order.schema';
 
@@ -5,18 +6,14 @@ const createOrder = async (order: Order) => {
   const result = await orderModel.create(order);
   return result;
 };
+//@ts-ignore
+const getOder = async (email) => {
 
-const getOder = async () => {
-  const result = await orderModel.find();
-  return result;
-};
-const emailQuery = async () => {
-  const result = await orderModel.find();
+  const result = await orderModel.find(email);
   return result;
 };
 
 export const allOrder = {
   createOrder,
   getOder,
-  emailQuery,
 };

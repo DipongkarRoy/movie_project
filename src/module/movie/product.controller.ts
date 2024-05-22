@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { allProductServices } from './product.service';
-import { ProductModel } from './product.schema';
+//import { ProductModel } from './product.schema';
 const createProduct = async (req: Request, res: Response) => {
   try {
     const id = req.body.products;
@@ -18,13 +18,29 @@ const createProduct = async (req: Request, res: Response) => {
 
 const getProduct = async (req: Request, res: Response) => {
   try {
-    const result = await allProductServices.getProductDb();
+    const {searchTerm} = req.query
+    console.log(searchTerm);
+    let name ={}
+    if(searchTerm==name){
+      const result = await allProductServices.getProductDb({searchTerm});
+      console.log(result);
 
-    res.status(200).json({
-      success: true,
-      massage: 'Products fetched successfully!',
-      data: result,
-    });
+      res.status(200).json({
+        success: true,
+        massage: 'Products fetched successfully!',
+        data: result,
+      });
+    }
+    else{
+      const result = await allProductServices.getProductDb({});
+
+      res.status(200).json({
+        success: true,
+        massage: 'Products fetched successfully!',
+        data: result,
+      });
+    }
+    
   } catch (error) {
     console.log(error);
   }
@@ -60,11 +76,6 @@ const productIdDelete = async (req: Request, res: Response) => {
 };
 
 export const updateProduct = async (req: Request, res: Response) => {
-  // const data = ProductModel.validate(req.body);
-  // if (data) console.log(data);
-  // return res
-  //   .status(400)
-  //   .json({ success: false, message: 'update data succesfully' });
 
   try {
     const {productId} = req.params;
