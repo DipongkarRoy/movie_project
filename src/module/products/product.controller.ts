@@ -1,111 +1,71 @@
-import { Request, Response } from 'express';
 import { allProductServices } from './product.service';
+import catchAsync from '../../utils/CatchAsyne';
 
-const createProduct = async (req: Request, res: Response) => {
-  try {
-    const id = req.body.products;
-    const result = await allProductServices.createProductDb(id);
+const createProduct = catchAsync(async (req, res) => {
+  const result = await allProductServices.createProductDb(req.body);
 
-    res.status(200).json({
-      success: true,
-      massage: 'Product created successfully!',
-      data: result,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
+  res.status(200).json({
+    success: true,
+    massage: 'Product created successfully!',
+    data: result,
+  });
+});
 
-const getProduct = async (req: Request, res: Response) => {
-  try {
-    const {searchTerm} = req.query
+const getAllProduct = catchAsync(async (req, res) => {
+  const result = await allProductServices.getProductDb(req.query);
+  res.status(200).json({
+    success: true,
+    massage: 'Products fetched successfully!',
+    data: result,
+  });
+});
 
-    if(searchTerm){
-      //@ts-ignore
-      const result = await allProductServices.getProductDb({searchTerm});
+const singleProductId = catchAsync(async (req, res) => {
+  const { productId } = req.params;
+  //@ts-ignore
+  const result = await allProductServices.idProductDb(productId);
+  res.status(200).json({
+    success: true,
+    massage: 'Product get successfully!',
+    data: result,
+  });
+});
+const productIdDelete = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  //@ts-ignore
+  const result = await allProductServices.deleteProductDb(id);
+  res.status(200).json({
+    success: true,
+    massage: 'Product deleted successfully!!',
+    data: result,
+  });
+});
 
-      res.status(200).json({
-        success: true,
-        massage: 'Products fetched successfully!',
-        data: result,
-      });
-    }
-    else{
-      //@ts-ignore
-      const result = await allProductServices.getProductDb({});
-
-      res.status(200).json({
-        success: true,
-        massage: 'Products fetched successfully!',
-        data: result,
-      });
-    }
-    
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const productId = async (req: Request, res: Response) => {
-  try {
-    const { productId } = req.params;
+export const updateProduct = catchAsync(async (req, res) => {
+  const { productId } = req.params;
+  const updateData = req.body;
+  const product = await allProductServices.updateProductIntoDb(
     //@ts-ignore
-    const result = await allProductServices.idProductDb(productId);
-    res.status(200).json({
-      success: true,
-      massage: 'Product get successfully!',
-      data: result,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-const productIdDelete = async (req: Request, res: Response) => {
-  try {
-    
-    const { id } = req.params;
-    //@ts-ignore
-    const result = await allProductServices.deleteProductDb(id);
-    res.status(200).json({
-      success: true,
-      massage: 'Product deleted successfully!!',
-      data: result,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
+    productId,
+    updateData,
+    { new: true },
+  );
+  if (!product)
+    return res
+      .status(404)
+      .json({ success: false, message: 'Product not found' });
 
-export const updateProduct = async (req: Request, res: Response) => {
-
-  try {
-    const productId = req.params.productId;
-    const updateData = req.body;
-    const product = await allProductServices.updateProductIntoDb(
-      //@ts-ignore
-      productId,
-      updateData,
-      { new: true },
-    );
-    if (!product)
-      return res
-        .status(404)
-        .json({ success: false, message: 'Product not found' });
-
-    res.status(200).json({
-      success: true,
-      message: 'Product updated successfully!',
-      data: product,
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Internal server error' });
-  }
-};
+  res.status(200).json({
+    success: true,
+    message: 'Product updated successfully!',
+    data: product,
+  });
+});
 
 export const ProductController = {
   createProduct,
-  getProduct,
-  productId,
+  getAllProduct,
+  singleProductId,
   productIdDelete,
   updateProduct,
 };

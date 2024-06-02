@@ -1,13 +1,23 @@
 import { Product } from './product.interface';
-import { ProductModel } from './product.schema';
+import { ProductModel } from './product.model';
 
 const createProductDb = async (product: Product) => {
   const result = await ProductModel.create(product);
   return result;
 };
 
-const getProductDb = async () => {
-  const result = await ProductModel.find();
+const getProductDb = async (query: Record<string, unknown>) => {
+  let searchTerm = ' ';
+
+  if (query?.searchTerm) {
+    searchTerm = query.searchTerm as string;
+  }
+
+  const result = await ProductModel.find({
+    $or: ['name'].map((fields) => ({
+      [fields]: { $regex: searchTerm, $options: 'i' },
+    })),
+  });
   return result;
 };
 

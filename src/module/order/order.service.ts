@@ -1,15 +1,15 @@
 
 import Order from './order.interface';
-import orderModel from './order.schema';
+import { OrderModel } from './order.model';
+
 
 const createOrder = async (order: Order) => {
-  const result = await orderModel.create(order);
+  const result = await OrderModel.create(order);
   return result;
 };
 //@ts-ignore
 const getOder = async (email) => {
-
-  const result = await orderModel.find(email);
+  const result = await OrderModel.find(email);
   return result;
 };
 
